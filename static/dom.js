@@ -37,14 +37,20 @@ let dom = {
     },
 
     showPlanets: function (planets) {
+        // send planets data for current page to pagination
         dom.pagination(planets);
+
+        // obtain required parameters
         let planetsParameters = data.getPlanetsParameters();
+
+        //erase tbody before loading
         var tbody = document.getElementById("planetsTableBody");
         tbody.innerHTML = '';
+
+        //select results only from planets
         var planetsResults = planets.results;
 
         // create table rows and cells
-        //create rows
         for (rowIndex = 0; rowIndex < planetsResults.length; rowIndex++) {
             var row = tbody.insertRow(rowIndex);
             row.setAttribute('ID', 'row'+rowIndex);
@@ -59,17 +65,23 @@ let dom = {
 
             }
         }
-
-        let firstColumn = document.getElementsByClassName('#');
-        for (cell = 0; cell < firstColumn.length; cell++) {
-            firstColumn[cell].innerHTML=cell+1
+        // create ID for each planet
+        let theIdColumn = document.getElementsByClassName('#');
+        for (cell = 0; cell < theIdColumn.length; cell++) {
+            theIdColumn[cell].innerHTML=cell+1
         }
+
+        // add residents info to residents column
         let residentsColumn = document.getElementsByClassName('residents');
+
+        // load api urls for each residents
         for (cell = 0; cell < residentsColumn.length; cell++) {
             if (planetsResults[cell].residents.length > 0) {
                 let links = planetsResults[cell].residents;
-
-                residentsColumn[cell].innerHTML = `<button type="button" onclick="dom.loadResidents('${links}')" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal-modal-lg" >${planetsResults[cell].residents.length}</button>`;
+                // add modal buttons to each resident cell showing the number of residents on each
+                residentsColumn[cell].innerHTML = `<button type="button" onclick="dom.loadResidents('${links}')" 
+                                                    class="btn btn-primary" data-toggle="modal" 
+                                                    data-target="#exampleModal-modal-lg" >${planetsResults[cell].residents.length}</button>`;
             }
         }
     },
@@ -99,16 +111,17 @@ let dom = {
 
     showResidents: function (residentsData) {
         var modalBody = document.getElementsByClassName("modal-body");
-        modalBody[0].innerHTML += `<table class="table-responsive-xs" id="modal-container">`;
+        let modalBodyClassIndex = 0;
+        modalBody[modalBodyClassIndex].innerHTML += `<table class="table-responsive-xs" id="modal-container">`;
 
         var modalContainer = document.getElementById("modal-container");
-        let modalRow = document.createElement('tr')
-        modalRow.className = "row"
-        modalContainer.appendChild(modalRow)
+        let modalRow = document.createElement('tr');
+        modalRow.className = "row";
+        modalContainer.appendChild(modalRow);
 
         let closeModalButton = document.getElementById("close");
         closeModalButton.addEventListener("click", function clearModal() {
-            modalBody[0].innerHTML = ""
+            modalBody[modalBodyClassIndex].innerHTML = ""
         });
 
         var residentHeaders = data.getResidentsParameters();
